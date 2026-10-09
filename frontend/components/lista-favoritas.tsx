@@ -37,11 +37,10 @@ export function ListaFavoritas({ favoritas }: { favoritas: Favorito[] }) {
       {aviso ? <p className="mb-4 text-sm text-muted-foreground">{aviso}</p> : null}
       {/* v0: lista-favoritos */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {guardadas.map((favorito, index) => (
+        {guardadas.map((favorito) => (
           <RecipeCard
             key={favorito.id}
             receta={favorito.receta}
-            index={index}
             esFavorita
             onToggleFavorita={() => quitar(favorito.receta)}
             onOpen={() => setSeleccionada(favorito.receta)}

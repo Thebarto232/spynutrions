@@ -209,7 +209,7 @@ dialog.receta-dialog[open][data-closing="true"]::backdrop {
 @media print {
   @page {
     size: A4;
-    margin: 12mm 14mm 14mm;
+    margin: 16mm 16mm 18mm;
   }
 
   html,

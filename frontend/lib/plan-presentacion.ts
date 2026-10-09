@@ -1,4 +1,5 @@
 import { etiquetaDia, MOMENTOS } from "@/components/nutricion/etiquetas";
+import { pasosUtiles, textoIngrediente } from "@/lib/presentacion";
 import type { Actividad, Consulta, Momento, Objetivo, PlanSemanal, Sexo, TipoCorporal } from "@/lib/types";
 
 const sexos: Record<Sexo, string> = { mujer: "Mujer", hombre: "Hombre" };
@@ -76,6 +77,9 @@ export function presentarPlan(plan: PlanSemanal, consulta: Consulta, fecha = new
           categoria: comida.receta.categoria ?? "",
           kcal: entero.format(comida.calorias_estimadas),
           nota: comida.nota_calorias,
+          imagen: comida.receta.imagen ?? "",
+          ingredientes: comida.receta.ingredientes.map(textoIngrediente),
+          pasos: pasosUtiles(comida.receta.pasos),
         }));
       const total = dia.comidas.reduce((suma, comida) => suma + comida.calorias_estimadas, 0);
       return { id: dia.dia, etiqueta: etiquetaDia(dia.dia), total: entero.format(total), comidas };

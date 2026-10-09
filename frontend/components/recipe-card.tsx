@@ -2,36 +2,28 @@
 
 import Image from "next/image";
 import { ArrowUpRight, Heart } from "lucide-react";
-import { motion } from "motion/react";
 import type { Receta, RecetaResumen } from "@/lib/types";
 import { esRecetaCompleta, resumenCorto, pasosUtiles } from "@/lib/presentacion";
-import { elevacion, transicion } from "@/lib/motion";
 
 type Props = {
   receta: Receta | RecetaResumen;
-  index: number;
   esFavorita: boolean;
   onToggleFavorita: () => void;
   onOpen: () => void;
 };
 
-export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen }: Props) {
+export function RecipeCard({ receta, esFavorita, onToggleFavorita, onOpen }: Props) {
   const completa = esRecetaCompleta(receta) ? receta : null;
   const pasos = completa ? pasosUtiles(completa.pasos).length : null;
   return (
-    <motion.article
-      className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={transicion("media", Math.min(index, 5) * 0.04)}
-      whileHover={elevacion}
-    >
+    <article className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm transition-transform duration-[var(--motion-media)] ease-[var(--motion-ease)] hover:-translate-y-0.5">
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {receta.imagen ? (
           <Image
             src={receta.imagen}
             alt={receta.nombre}
             fill
+            unoptimized
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
           />
@@ -85,6 +77,6 @@ export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen
           <ArrowUpRight className="size-4" aria-hidden="true" />
         </button>
       </div>
-    </motion.article>
+    </article>
   );
 }

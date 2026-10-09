@@ -12,6 +12,7 @@ import { FuentesList, fuentesDelPlan } from "@/components/nutricion/fuentes-list
 import { ListaCompras } from "@/components/nutricion/lista-compras";
 import { PlanImpreso } from "@/components/nutricion/plan-impreso";
 import { ResumenDiagnostico } from "@/components/nutricion/resumen-diagnostico";
+import { fotosEnDataUrl } from "@/lib/plan-fotos";
 import { presentarPlan } from "@/lib/plan-presentacion";
 import { transicion, varianteEntrada } from "@/lib/motion";
 import type { Consulta, DiaSemana, PlanSemanal, Receta } from "@/lib/types";
@@ -41,11 +42,12 @@ export function ConsultaResultado({
   async function descargar() {
     setDescargando(true);
     try {
-      const [{ pdf }, { PlanDocumento }] = await Promise.all([
+      const [{ pdf }, { PlanDocumento }, fotos] = await Promise.all([
         import("@react-pdf/renderer"),
         import("@/components/nutricion/plan-documento"),
+        fotosEnDataUrl(plan.dias.flatMap((dia) => dia.comidas.map((comida) => comida.receta.imagen ?? ""))),
       ]);
-      const blob = await pdf(<PlanDocumento plan={plan} consulta={consulta} />).toBlob();
+      const blob = await pdf(<PlanDocumento plan={plan} consulta={consulta} fotos={fotos} />).toBlob();
       const url = URL.createObjectURL(blob);
       const enlace = document.createElement("a");
       enlace.href = url;

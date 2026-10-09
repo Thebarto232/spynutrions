@@ -1,7 +1,12 @@
 import type { Categoria, Favorito, Receta, RecetaResumen } from "@/lib/types";
 import { pedir } from "@/lib/pedir";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+function baseApi() {
+  if (typeof window !== "undefined") return "";
+  return process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+}
+
+const API_URL = baseApi();
 
 export function buscarRecetas(q: string) {
   return pedir<Receta[]>(API_URL, `/api/recetas/buscar?q=${encodeURIComponent(q)}`);

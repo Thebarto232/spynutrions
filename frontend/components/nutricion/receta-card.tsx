@@ -22,7 +22,7 @@ export function RecetaCard({ comida, onVer }: { comida: Comida; onVer: (receta: 
       />
       <div className="relative hidden size-24 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
         {receta.imagen ? (
-          <Image src={receta.imagen} alt="" fill sizes="96px" className="object-cover" />
+          <Image src={receta.imagen} alt="" fill unoptimized sizes="96px" className="object-cover" />
         ) : null}
       </div>
       <CardContent className="min-w-0 flex-1">

@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { pasosUtiles, textoIngrediente } from "@/lib/presentacion";
 import { Card, CardContent } from "@/components/ui/card";
 import { etiquetaDia, MOMENTOS } from "@/components/nutricion/etiquetas";
 import type { Actividad, Consulta, Momento, Objetivo, PlanSemanal, Sexo, TipoCorporal } from "@/lib/types";
@@ -136,41 +137,64 @@ export function PlanImpreso({ plan, consulta }: { plan: PlanSemanal; consulta: C
       ) : null}
 
       <section className="mt-6 space-y-3">
-        <h2 className="font-[family-name:var(--font-fraunces)] text-2xl font-semibold">Las comidas</h2>
+        <h2 className="font-[family-name:var(--font-fraunces)] text-2xl font-semibold">La semana</h2>
         {plan.dias.map((dia) => {
           const comidas = [...dia.comidas].sort(
             (a, b) => ordenComida.indexOf(a.momento) - ordenComida.indexOf(b.momento),
           );
-          const total = comidas.reduce((suma, comida) => suma + comida.calorias_estimadas, 0);
           return (
-            <Card key={dia.dia} className={`break-inside-avoid gap-0 py-0 ${pieza}`}>
-              <div className="flex items-center justify-between gap-4 bg-secondary px-4 py-3">
-                <h3 className="font-[family-name:var(--font-fraunces)] text-xl">{etiquetaDia(dia.dia)}</h3>
-                <Badge variant="outline" className="bg-card tabular-nums">
-                  {entero.format(total)} kcal
-                </Badge>
-              </div>
-              {comidas.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-muted-foreground">Este día quedó sin platos.</p>
-              ) : (
-                <ul>
-                  {comidas.map((comida) => (
-                    <li key={`${dia.dia}-${comida.momento}`} className="border-t border-border px-4 py-3 text-sm">
-                      <p className="text-muted-foreground">{MOMENTOS[comida.momento]}</p>
-                      <p className="mt-1 font-[family-name:var(--font-fraunces)] text-lg font-medium leading-tight">
-                        {comida.receta.nombre}
-                      </p>
-                      <div className="mt-2 flex flex-wrap items-center gap-2">
-                        {comida.receta.categoria ? <Badge variant="secondary">{comida.receta.categoria}</Badge> : null}
-                        <Badge variant="outline">≈ {entero.format(comida.calorias_estimadas)} kcal</Badge>
-                      </div>
-                      {comida.nota_calorias ? (
-                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{comida.nota_calorias}</p>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <Card key={dia.dia} className={pieza}>
+              <CardContent>
+                <h3 className="font-[family-name:var(--font-fraunces)] text-2xl">{etiquetaDia(dia.dia)}</h3>
+                {comidas.length === 0 ? (
+                  <p className="mt-3 text-sm text-muted-foreground">Este día quedó sin platos.</p>
+                ) : (
+                  <ul className="mt-4 space-y-3">
+                    {comidas.map((comida) => (
+                      <li key={`${dia.dia}-${comida.momento}`} className="flex gap-4 rounded-xl border border-border bg-card p-3">
+                        <div className="size-24 shrink-0 overflow-hidden rounded-lg bg-muted">
+                          {comida.receta.imagen ? (
+                            <img src={comida.receta.imagen} alt="" className="size-full object-cover" />
+                          ) : null}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm text-muted-foreground">{MOMENTOS[comida.momento]}</p>
+                          <p className="mt-1 font-[family-name:var(--font-fraunces)] text-xl font-semibold leading-tight">
+                            {comida.receta.nombre}
+                          </p>
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            {comida.receta.categoria ? <Badge variant="secondary">{comida.receta.categoria}</Badge> : null}
+                            <Badge variant="outline">≈ {entero.format(comida.calorias_estimadas)} kcal</Badge>
+                          </div>
+                          {comida.nota_calorias ? (
+                            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{comida.nota_calorias}</p>
+                          ) : null}
+                          {comida.receta.ingredientes.length > 0 ? (
+                            <div className="mt-3 border-t border-border pt-2">
+                              <p className="text-xs text-muted-foreground">Ingredientes</p>
+                              <ul className="mt-1 space-y-0.5 text-sm">
+                                {comida.receta.ingredientes.map((item, indice) => (
+                                  <li key={`${indice}-${textoIngrediente(item)}`}>{textoIngrediente(item)}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {pasosUtiles(comida.receta.pasos).length > 0 ? (
+                            <div className="mt-3 border-t border-border pt-2">
+                              <p className="text-xs text-muted-foreground">Pasos</p>
+                              <ol className="mt-1 list-decimal space-y-1 pl-4 text-sm">
+                                {pasosUtiles(comida.receta.pasos).map((paso) => (
+                                  <li key={paso}>{paso}</li>
+                                ))}
+                              </ol>
+                            </div>
+                          ) : null}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
             </Card>
           );
         })}

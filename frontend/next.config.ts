@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  allowedDevOrigins: ["127.0.0.1", "localhost", "*.trycloudflare.com"],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["127.0.0.1", "localhost", "*.trycloudflare.com"],
+    },
+  },
   serverExternalPackages: ["@react-pdf/renderer"],
   outputFileTracingIncludes: {
     "/api/chat": ["./knowledge/**/*"],

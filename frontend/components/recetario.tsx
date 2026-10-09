@@ -37,6 +37,8 @@ export function Recetario({
   const [seleccionada, setSeleccionada] = useState<Receta | null>(null);
   const [abriendo, setAbriendo] = useState(false);
   const [aviso, setAviso] = useState<string | null>(error);
+  const [elegida, setElegida] = useState<string | null>(null);
+  const [buscandoTexto, setBuscandoTexto] = useState(false);
 
   useEffect(() => {
     setTexto(ingredientes || consulta);
@@ -44,7 +46,9 @@ export function Recetario({
     setGuardadas(favoritas);
     setAviso(error);
     setSeleccionada(null);
-  }, [consulta, ingredientes, favoritas, error]);
+    setElegida(null);
+    setBuscandoTexto(false);
+  }, [consulta, ingredientes, categoriaActiva, favoritas, error]);
 
   function buscar(event: React.FormEvent) {
     event.preventDefault();
@@ -52,6 +56,8 @@ export function Recetario({
     const valor = texto.trim();
     if (valor) params.set(porIngrediente ? "i" : "q", valor);
     setSoloFavoritas(false);
+    setElegida(null);
+    setBuscandoTexto(true);
     startTransition(() => router.push(`/?${params.toString()}#recetas`));
   }
 
@@ -101,21 +107,22 @@ export function Recetario({
   const favoritoAbierto = seleccionada
     ? guardadas.find((favorito) => favorito.receta.id === seleccionada.id)?.id ?? null
     : null;
-  const categoriaVisible = categorias.find((item) => item.clave === categoriaActiva);
+  const claveActiva = elegida ?? categoriaActiva;
+  const categoriaVisible = categorias.find((item) => item.clave === claveActiva);
   const titulo = consulta
     ? consulta
     : ingredientes
       ? ingredientes
       : (categoriaVisible?.etiqueta ?? "Recetas");
   const categoriaSeleccionada = (clave: string) =>
-    !consulta && !ingredientes && !soloFavoritas && categoriaActiva === clave;
+    !consulta && !ingredientes && !soloFavoritas && claveActiva === clave;
 
   return (
     <section id="recetas" className="mx-auto max-w-7xl scroll-mt-8 px-6 py-16 lg:py-24">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <h2 className="font-serif text-5xl font-semibold tracking-tight sm:text-6xl">{titulo}</h2>
         <p className="pb-2 text-sm text-muted-foreground" aria-live="polite">
-          {visibles.length} {visibles.length === 1 ? "receta" : "recetas"}
+          {pending ? "Buscando…" : `${visibles.length} ${visibles.length === 1 ? "receta" : "recetas"}`}
         </p>
       </div>
 
@@ -134,7 +141,7 @@ export function Recetario({
             type="submit"
             className="absolute right-1 top-1 h-10 rounded-full bg-ink px-5 text-sm font-semibold text-ink-foreground"
           >
-            {pending ? "Buscando…" : "Buscar"}
+            {buscandoTexto && pending ? "Buscando…" : "Buscar"}
           </button>
         </label>
         <button
@@ -181,10 +188,12 @@ export function Recetario({
                   setSoloFavoritas(false);
                   setPorIngrediente(false);
                   setTexto("");
+                  setBuscandoTexto(false);
+                  setElegida(categoria.clave);
                   startTransition(() => router.push(`/?c=${encodeURIComponent(categoria.clave)}#recetas`));
                 }}
                 aria-pressed={activa}
-                className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+                className={`rounded-full px-3.5 py-1.5 text-sm outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
                   activa
                     ? "bg-ink font-semibold text-ink-foreground"
                     : "text-foreground/80 hover:bg-secondary"
@@ -209,11 +218,10 @@ export function Recetario({
         </div>
       ) : visibles.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {visibles.map((receta, index) => (
+          {visibles.map((receta) => (
             <RecipeCard
               key={receta.id}
               receta={receta}
-              index={index}
               esFavorita={guardadas.some((favorito) => favorito.receta.id === receta.id)}
               onToggleFavorita={() => alternar(receta)}
               onOpen={() => abrir(receta)}

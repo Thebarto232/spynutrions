@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useRef } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MessageCircle } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -52,6 +53,11 @@ export function ChatWidget({
 }) {
   const zona = useRef<HTMLDivElement>(null);
   const reducido = useReducedMotion();
+  const [montado, setMontado] = useState(false);
+
+  useEffect(() => {
+    setMontado(true);
+  }, []);
 
   useEffect(() => {
     const viewport = zona.current?.querySelector<HTMLElement>("[data-slot=scroll-area-viewport]");
@@ -63,7 +69,9 @@ export function ChatWidget({
     onEnviar(texto);
   }
 
-  return (
+  if (!montado) return null;
+
+  return createPortal(
     <div className="print:hidden fixed bottom-4 right-4 z-40">
       <Button type="button" size="lg" aria-expanded={abierto} onClick={() => onAbierto(!abierto)}>
         <MessageCircle aria-hidden="true" />
@@ -161,6 +169,7 @@ export function ChatWidget({
           </form>
         </SheetContent>
       </Sheet>
-    </div>
+    </div>,
+    document.body,
   );
 }

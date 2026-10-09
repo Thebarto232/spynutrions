@@ -8,8 +8,8 @@ export function Hero({ receta }: { receta: Receta | null }) {
   const pasos = receta ? pasosUtiles(receta.pasos) : [];
 
   return (
-    <section id="portada" className="relative overflow-hidden bg-ink text-ink-foreground">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-32 lg:grid-cols-12 lg:pb-28 lg:pt-40">
+    <section id="portada" className="relative isolate bg-ink text-ink-foreground">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 pb-12 pt-28 lg:min-h-svh lg:grid-cols-12 lg:gap-12 lg:py-16">
         <div className="lg:col-span-6">
           {receta?.categoria ? (
             <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-ink-foreground/10 px-3 py-1 text-xs font-medium uppercase tracking-widest text-accent">
@@ -17,7 +17,7 @@ export function Hero({ receta }: { receta: Receta | null }) {
               {receta.categoria}
             </p>
           ) : null}
-          <h1 className="text-balance font-serif text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="text-balance font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
             {receta?.nombre ?? "Buscando una receta…"}
           </h1>
           <p className="mt-6 max-w-lg text-pretty text-lg leading-relaxed text-ink-foreground/70">
@@ -41,29 +41,28 @@ export function Hero({ receta }: { receta: Receta | null }) {
             </Link>
           </div>
           {receta ? (
-            <dl className="mt-14 grid max-w-md grid-cols-2 gap-6 border-t border-ink-foreground/15 pt-8">
+            <dl className="mt-8 grid max-w-md grid-cols-2 gap-4 border-t border-ink-foreground/15 pt-6">
               <div>
-                <dt className="sr-only">Ingredientes</dt>
+                <dt className="text-xs text-ink-foreground/60">Ingredientes</dt>
                 <dd className="font-serif text-3xl font-semibold">{receta.ingredientes.length}</dd>
-                <dd className="mt-1 text-xs text-ink-foreground/60">ingredientes</dd>
               </div>
               <div>
-                <dt className="sr-only">Pasos</dt>
+                <dt className="text-xs text-ink-foreground/60">Pasos</dt>
                 <dd className="font-serif text-3xl font-semibold">{pasos.length}</dd>
-                <dd className="mt-1 text-xs text-ink-foreground/60">pasos</dd>
               </div>
             </dl>
           ) : null}
         </div>
 
         <div className="relative lg:col-span-6">
-          <div className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-ink-foreground/10 ring-1 ring-ink-foreground/10">
+          <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-[2rem] bg-ink-foreground/10 ring-1 ring-ink-foreground/10 sm:aspect-square lg:aspect-auto lg:h-[min(28rem,calc(100svh-12rem))] lg:w-[min(28rem,calc(100svh-12rem))] lg:max-w-full">
             {receta?.imagen ? (
               <Image
                 src={receta.imagen}
                 alt={receta.nombre}
                 fill
                 priority
+                unoptimized
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
               />

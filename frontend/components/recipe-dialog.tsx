@@ -74,7 +74,7 @@ export function ContenidoReceta({
     <div className="grid h-full md:grid-cols-[2fr_3fr]">
       <div className="relative hidden min-h-80 md:block">
         {receta.imagen ? (
-          <Image src={receta.imagen} alt={receta.nombre} fill sizes="40vw" className="object-cover" />
+          <Image src={receta.imagen} alt={receta.nombre} fill unoptimized sizes="40vw" className="object-cover" />
         ) : (
           <div className="absolute inset-0 bg-muted" />
         )}
@@ -176,7 +176,7 @@ export function ContenidoReceta({
           {tab === "resumen" && (
             <div className="space-y-6">
               <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-muted md:hidden">
-                {receta.imagen ? <Image src={receta.imagen} alt="" fill sizes="100vw" className="object-cover" /> : null}
+                {receta.imagen ? <Image src={receta.imagen} alt="" fill unoptimized sizes="100vw" className="object-cover" /> : null}
               </div>
               <div className="rounded-2xl border-l-4 border-primary bg-muted p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">En pocas palabras</p>
