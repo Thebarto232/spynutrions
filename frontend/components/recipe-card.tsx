@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { ArrowUpRight, Heart } from "lucide-react";
+import { motion } from "motion/react";
 import type { Receta, RecetaResumen } from "@/lib/types";
 import { esRecetaCompleta, resumenCorto, pasosUtiles } from "@/lib/presentacion";
+import { elevacion, transicion } from "@/lib/motion";
 
 type Props = {
   receta: Receta | RecetaResumen;
@@ -17,9 +19,12 @@ export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen
   const completa = esRecetaCompleta(receta) ? receta : null;
   const pasos = completa ? pasosUtiles(completa.pasos).length : null;
   return (
-    <article
-      className="group relative flex animate-in fade-in slide-in-from-bottom-4 flex-col overflow-hidden rounded-3xl border bg-card fill-mode-both shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-      style={{ animationDelay: `${Math.min(index, 8) * 70}ms`, animationDuration: "500ms" }}
+    <motion.article
+      className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={transicion("media", Math.min(index, 5) * 0.04)}
+      whileHover={elevacion}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {receta.imagen ? (
@@ -28,7 +33,7 @@ export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen
             alt={receta.nombre}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className="object-cover"
           />
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" aria-hidden="true" />
@@ -42,7 +47,7 @@ export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen
           onClick={onToggleFavorita}
           aria-pressed={esFavorita}
           aria-label={esFavorita ? `Quitar ${receta.nombre} de favoritas` : `Guardar ${receta.nombre} en favoritas`}
-          className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 text-card-foreground shadow-md backdrop-blur transition-transform hover:scale-110 active:scale-95"
+          className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 text-card-foreground shadow-md backdrop-blur transition-transform duration-[var(--motion-corta)] ease-[var(--motion-ease)] active:scale-[0.98]"
         >
           <Heart
             className={`size-5 transition-colors ${esFavorita ? "fill-primary text-primary" : "text-foreground"}`}
@@ -80,6 +85,6 @@ export function RecipeCard({ receta, index, esFavorita, onToggleFavorita, onOpen
           <ArrowUpRight className="size-4" aria-hidden="true" />
         </button>
       </div>
-    </article>
+    </motion.article>
   );
 }

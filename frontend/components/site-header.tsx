@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ChefHat, Search } from "lucide-react";
 
 const links = [
+  { href: "/plan", label: "Plan semanal" },
   { href: "/#recetas", label: "Recetas" },
-  { href: "/#portada", label: "En portada" },
   { href: "/favoritos", label: "Favoritas" },
 ];
 
@@ -29,6 +29,9 @@ export function SiteHeader({ tono = "overlay" }: { tono?: "overlay" | "solid" })
           </ul>
         </nav>
         <div className="flex items-center gap-2">
+          <Link href="/plan" className="rounded-full px-3 py-2 text-sm font-medium opacity-80 hover:opacity-100 md:hidden">
+            Plan
+          </Link>
           <Link href="/favoritos" className="rounded-full px-3 py-2 text-sm font-medium opacity-80 hover:opacity-100">
             Favoritas
           </Link>

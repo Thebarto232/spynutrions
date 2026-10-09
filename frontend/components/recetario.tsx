@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Heart, Search } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { guardarFavorito, obtenerReceta, quitarFavorito } from "@/lib/api-cliente";
 import { RecipeCard } from "@/components/recipe-card";
 import { RecipeDialog } from "@/components/recipe-dialog";
@@ -199,7 +200,14 @@ export function Recetario({
       {aviso ? <p className="mt-6 text-sm text-muted-foreground">{aviso}</p> : null}
       {abriendo ? <p className="mt-6 text-sm text-muted-foreground">Abriendo la receta…</p> : null}
 
-      {visibles.length > 0 ? (
+      {pending ? (
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8" aria-busy="true" aria-live="polite">
+          <p className="sr-only">Buscando recetas…</p>
+          {Array.from({ length: 6 }, (_, indice) => (
+            <Skeleton key={indice} className="h-80 rounded-3xl" />
+          ))}
+        </div>
+      ) : visibles.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {visibles.map((receta, index) => (
             <RecipeCard

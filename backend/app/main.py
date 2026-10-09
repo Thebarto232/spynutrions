@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.core.db import engine
 from app.models.base import Base
-from app.routers import categorias, favoritos, recetas
+from app.routers import categorias, favoritos, plan, recetas
 
 
 @asynccontextmanager
@@ -28,6 +28,7 @@ def crear_app() -> FastAPI:
     app.include_router(recetas.router)
     app.include_router(categorias.router)
     app.include_router(favoritos.router)
+    app.include_router(plan.router)
     return app
 
 

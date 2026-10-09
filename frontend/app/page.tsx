@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   buscarPorCategoria,
   buscarPorIngredientes,
@@ -15,6 +16,19 @@ import type { Favorito, Receta, RecetaResumen } from "@/lib/types";
 
 const CATEGORIA_INICIAL = "Chicken";
 
+function RecetasEsqueleto() {
+  return (
+    <div className="mx-auto max-w-7xl px-6 py-24" aria-busy="true" aria-live="polite">
+      <p className="text-sm text-muted-foreground">Buscando recetas…</p>
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }, (_, indice) => (
+          <Skeleton key={indice} className="h-80 rounded-3xl" aria-hidden="true" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Home({
   searchParams,
 }: {
@@ -24,7 +38,7 @@ export default function Home({
     <>
       <SiteHeader tono="overlay" />
       <main>
-        <Suspense fallback={<p className="mx-auto max-w-7xl px-6 py-24 text-sm text-muted-foreground">Buscando recetas…</p>}>
+        <Suspense fallback={<RecetasEsqueleto />}>
           <Inicio searchParams={searchParams} />
         </Suspense>
       </main>

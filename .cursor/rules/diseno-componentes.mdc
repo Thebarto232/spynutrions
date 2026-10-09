@@ -1,0 +1,13 @@
+---
+description: Reglas de diseño y uso de componentes
+alwaysApply: true
+---
+
+- Antes de crear cualquier componente de UI, busca en el MCP de shadcn si ya existe uno adecuado e instálalo con el MCP en lugar de escribirlo desde cero.
+- Para dudas de API de React, Tailwind, Recharts o shadcn, consulta Context7 y no uses memoria.
+- Usa solo los design tokens definidos en el proyecto (colores, tipografía, espaciado). Sin colores sueltos.
+- Reutiliza los componentes de components/ui y components/nutricion antes de crear nuevos.
+- Íconos solo con lucide-react.
+- Todo componente debe ser responsive, accesible y tener estados de carga y error.
+- Al terminar cada cambio de UI, actualiza DESIGN.md y la página /componentes.
+- No modifiques la lógica existente cuando el cambio sea solo visual.

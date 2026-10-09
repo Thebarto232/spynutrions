@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChefHat, Heart, ListChecks, Sparkles, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { guardarFavorito, quitarFavorito } from "@/lib/api-cliente";
+import { duracion } from "@/lib/motion";
 import { resumenCorto, textoIngrediente, pasosUtiles } from "@/lib/presentacion";
 import type { Receta } from "@/lib/types";
 
@@ -77,9 +81,7 @@ export function ContenidoReceta({
         <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" aria-hidden="true" />
         <div className="absolute inset-x-6 bottom-6 text-ink-foreground">
           <p className="text-xs font-semibold uppercase tracking-widest opacity-80">Tu progreso</p>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-ink-foreground/20">
-            <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
-          </div>
+          <Progress value={progress} className="mt-2" />
           <p className="mt-2 text-sm font-medium">
             {progress === 100
               ? "Listo para servir."
@@ -100,16 +102,25 @@ export function ContenidoReceta({
               </h2>
             </div>
             <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={alternarFavorita}
-                disabled={ocupado}
-                aria-pressed={guardadaId !== null}
-                aria-label={guardadaId !== null ? "Quitar de favoritas" : "Guardar en favoritas"}
-                className="rounded-full bg-muted p-2 transition-colors hover:bg-secondary disabled:opacity-60"
-              >
-                <Heart className={`size-5 ${guardadaId !== null ? "fill-primary text-primary" : ""}`} aria-hidden="true" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="icon"
+                      className="rounded-full"
+                      onClick={alternarFavorita}
+                      disabled={ocupado}
+                      aria-pressed={guardadaId !== null}
+                      aria-label={guardadaId !== null ? "Quitar de favoritas" : "Guardar en favoritas"}
+                    />
+                  }
+                >
+                  <Heart className={guardadaId !== null ? "fill-primary text-primary" : undefined} aria-hidden="true" />
+                </TooltipTrigger>
+                <TooltipContent>{guardadaId !== null ? "Quitar de favoritas" : "Guardar en favoritas"}</TooltipContent>
+              </Tooltip>
               {onClose ? (
                 <button
                   type="button"
@@ -212,17 +223,22 @@ export function ContenidoReceta({
                         role="checkbox"
                         aria-checked={checked}
                         onClick={() => setCheckedIngredients((current) => toggle(current, index))}
-                        className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm transition-all ${
+                        className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm transition-transform duration-[var(--motion-corta)] ease-[var(--motion-ease)] active:scale-[0.98] ${
                           checked ? "border-primary/40 bg-primary/5 text-muted-foreground" : "hover:border-foreground/30 hover:bg-muted"
                         }`}
                       >
                         <span
-                          className={`flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                          className={`flex size-5 shrink-0 items-center justify-center rounded-md border-2 ${
                             checked ? "border-primary bg-primary text-primary-foreground" : "border-border"
                           }`}
                           aria-hidden="true"
                         >
-                          {checked ? <Check className="size-3.5" strokeWidth={3} /> : null}
+                          <Check
+                            className={`size-3.5 transition-opacity duration-[var(--motion-corta)] ease-[var(--motion-ease)] ${
+                              checked ? "opacity-100" : "opacity-0"
+                            }`}
+                            strokeWidth={3}
+                          />
                         </span>
                         <span className={checked ? "line-through" : ""}>{texto}</span>
                       </button>
@@ -315,19 +331,38 @@ export function RecipeDialog({
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (receta && !dialog.open) dialog.showModal();
-    if (!receta && dialog.open) dialog.close();
+    if (receta && !dialog.open) {
+      dialog.showModal();
+      return;
+    }
+    if (!receta && dialog.open) {
+      const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reducido) {
+        dialog.close();
+        return;
+      }
+      dialog.dataset.closing = "true";
+      const timer = window.setTimeout(() => {
+        delete dialog.dataset.closing;
+        if (dialog.open) dialog.close();
+      }, duracion.media * 1000);
+      return () => window.clearTimeout(timer);
+    }
   }, [receta]);
 
   return (
     <dialog
       ref={ref}
       onClose={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
       aria-labelledby="recipe-dialog-title"
-      className="m-auto h-[min(44rem,92vh)] w-[min(64rem,calc(100%-1.5rem))] overflow-hidden rounded-3xl bg-card p-0 text-card-foreground shadow-2xl backdrop:bg-ink/70 backdrop:backdrop-blur-sm"
+      className="receta-dialog m-auto h-[min(44rem,92vh)] w-[min(64rem,calc(100%-1.5rem))] overflow-hidden rounded-3xl bg-card p-0 text-card-foreground shadow-2xl"
     >
       {receta ? (
         <ContenidoReceta

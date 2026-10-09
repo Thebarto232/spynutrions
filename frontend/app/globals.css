@@ -44,6 +44,19 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+@theme {
+  --animate-barra: barra-crecer var(--motion-larga) var(--motion-ease) both;
+
+  @keyframes barra-crecer {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -123,6 +136,102 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    --motion-corta: 1ms !important;
+    --motion-media: 1ms !important;
+    --motion-larga: 1ms !important;
+    --motion-shift: 0px !important;
+  }
+
+  [data-slot="skeleton"],
+  [data-slot="progress-indicator"] {
+    animation: none;
+    transform: none;
+  }
+
+  [data-slot="button"]:active,
+  [data-slot="checkbox"]:active {
+    scale: 1;
+  }
+}
+
+dialog.receta-dialog,
+dialog.receta-dialog::backdrop {
+  transition:
+    opacity var(--motion-media) var(--motion-ease),
+    transform var(--motion-media) var(--motion-ease),
+    overlay var(--motion-media) var(--motion-ease) allow-discrete,
+    display var(--motion-media) var(--motion-ease) allow-discrete;
+}
+
+dialog.receta-dialog {
+  transform: translateY(var(--motion-shift));
+  opacity: 0;
+}
+
+dialog.receta-dialog[open] {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+dialog.receta-dialog[open][data-closing="true"] {
+  transform: translateY(var(--motion-shift));
+  opacity: 0;
+}
+
+dialog.receta-dialog::backdrop {
+  background: color-mix(in oklch, var(--ink) 70%, transparent);
+  opacity: 0;
+}
+
+dialog.receta-dialog[open]::backdrop {
+  opacity: 1;
+}
+
+dialog.receta-dialog[open][data-closing="true"]::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  dialog.receta-dialog[open],
+  dialog.receta-dialog[open]::backdrop {
+    opacity: 0;
+  }
+
+  dialog.receta-dialog[open] {
+    transform: translateY(var(--motion-shift));
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm 14mm;
+  }
+
+  html,
+  body {
+    background: white !important;
+  }
+
+  nextjs-portal,
+  [data-nextjs-toast],
+  [data-nextjs-dialog],
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  .plan-impreso {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .plan-impreso .hoja-compras {
+    break-before: page;
+  }
 }
 
 @layer base {

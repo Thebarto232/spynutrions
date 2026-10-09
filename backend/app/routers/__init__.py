@@ -1,3 +1,3 @@
-from app.routers import categorias, favoritos, recetas
+from app.routers import categorias, favoritos, plan, recetas
 
-__all__ = ["categorias", "favoritos", "recetas"]
+__all__ = ["categorias", "favoritos", "plan", "recetas"]

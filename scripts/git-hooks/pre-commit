@@ -1,0 +1,12 @@
+#!/bin/sh
+root=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+if command -v python >/dev/null 2>&1; then
+  py=python
+elif command -v py >/dev/null 2>&1; then
+  py=py
+else
+  echo "Falta Python. No se puede comprobar si hay claves."
+  exit 1
+fi
+cd "$root" || exit 1
+"$py" scripts/scan_secrets.py --staged

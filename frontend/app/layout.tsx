@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { ChatNutricion } from "@/components/chat-nutricion";
+import { ProveedorMotion } from "@/components/nutricion/proveedor-motion";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { variablesMotion } from "@/lib/motion";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -26,8 +31,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${fraunces.variable} ${inter.variable}`}>
-      <body className="antialiased">{children}</body>
+    <html lang="es" className={`${fraunces.variable} ${inter.variable}`} style={variablesMotion}>
+      <body className="antialiased">
+        <ProveedorMotion>
+          <TooltipProvider>
+            {children}
+            <ChatNutricion />
+            <Toaster position="bottom-center" />
+          </TooltipProvider>
+        </ProveedorMotion>
+      </body>
     </html>
   );
 }

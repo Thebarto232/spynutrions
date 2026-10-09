@@ -16,8 +16,8 @@ export function SiteFooter() {
           </a>
           .
         </p>
-        <Link href="/favoritos" className="font-medium text-ink-foreground">
-          Favoritas
+        <Link href="/plan" className="font-medium text-ink-foreground">
+          Plan semanal
         </Link>
       </div>
     </footer>
