@@ -89,16 +89,31 @@ const styles = StyleSheet.create({
     backgroundColor: papel,
   },
   comida: {
-    flexDirection: "row",
-    alignItems: "center",
     borderTopWidth: 1,
     borderTopColor: linea,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 10,
   },
-  momento: { width: 74, fontSize: 8, backgroundColor: suave, borderRadius: 8, paddingVertical: 3, paddingHorizontal: 6 },
-  plato: { flex: 1, fontSize: 9, marginHorizontal: 8 },
-  kcalComida: { width: 54, fontSize: 8, color: apagado, textAlign: "right" },
+  momento: { fontSize: 8, color: apagado },
+  plato: { fontFamily: "Times-Roman", fontSize: 13, marginTop: 2 },
+  meta: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 4 },
+  categoria: {
+    fontSize: 8,
+    backgroundColor: suave,
+    borderRadius: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    marginRight: 6,
+  },
+  kcalComida: {
+    fontSize: 8,
+    borderWidth: 1,
+    borderColor: linea,
+    borderRadius: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+  },
+  notaComida: { fontSize: 8, color: apagado, marginTop: 4, lineHeight: 1.35 },
   vacio: { fontSize: 9, color: apagado, padding: 10 },
   compras: { flexDirection: "row", flexWrap: "wrap" },
   compra: {
@@ -203,7 +218,7 @@ export function PlanDocumento({ plan, consulta }: { plan: PlanSemanal; consulta:
 
         <Text style={styles.seccion}>Las comidas</Text>
         {hoja.dias.map((dia) => (
-          <View key={dia.id} style={styles.dia} wrap={false}>
+          <View key={dia.id} style={styles.dia}>
             <View style={styles.diaCabecera}>
               <Text style={styles.diaNombre}>{dia.etiqueta}</Text>
               <Text style={styles.diaTotal}>{dia.total} kcal</Text>
@@ -212,10 +227,14 @@ export function PlanDocumento({ plan, consulta }: { plan: PlanSemanal; consulta:
               <Text style={styles.vacio}>Este día quedó sin platos.</Text>
             ) : (
               dia.comidas.map((comida) => (
-                <View key={`${dia.id}-${comida.momento}`} style={styles.comida}>
+                <View key={`${dia.id}-${comida.momento}`} style={styles.comida} wrap={false}>
                   <Text style={styles.momento}>{comida.momento}</Text>
                   <Text style={styles.plato}>{comida.nombre}</Text>
-                  <Text style={styles.kcalComida}>{comida.kcal} kcal</Text>
+                  <View style={styles.meta}>
+                    {comida.categoria ? <Text style={styles.categoria}>{comida.categoria}</Text> : null}
+                    <Text style={styles.kcalComida}>≈ {comida.kcal} kcal</Text>
+                  </View>
+                  {comida.nota ? <Text style={styles.notaComida}>{comida.nota}</Text> : null}
                 </View>
               ))
             )}

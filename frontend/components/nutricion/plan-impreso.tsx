@@ -155,13 +155,18 @@ export function PlanImpreso({ plan, consulta }: { plan: PlanSemanal; consulta: C
               ) : (
                 <ul>
                   {comidas.map((comida) => (
-                    <li
-                      key={`${dia.dia}-${comida.momento}`}
-                      className="grid grid-cols-1 items-start gap-2 border-t border-border px-4 py-2.5 text-sm min-[520px]:grid-cols-[7.5rem_minmax(0,1fr)_auto] min-[520px]:items-center"
-                    >
-                      <Badge variant="secondary">{MOMENTOS[comida.momento]}</Badge>
-                      <span className="min-w-0 font-medium">{comida.receta.nombre}</span>
-                      <span className="tabular-nums text-muted-foreground">{entero.format(comida.calorias_estimadas)} kcal</span>
+                    <li key={`${dia.dia}-${comida.momento}`} className="border-t border-border px-4 py-3 text-sm">
+                      <p className="text-muted-foreground">{MOMENTOS[comida.momento]}</p>
+                      <p className="mt-1 font-[family-name:var(--font-fraunces)] text-lg font-medium leading-tight">
+                        {comida.receta.nombre}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        {comida.receta.categoria ? <Badge variant="secondary">{comida.receta.categoria}</Badge> : null}
+                        <Badge variant="outline">≈ {entero.format(comida.calorias_estimadas)} kcal</Badge>
+                      </div>
+                      {comida.nota_calorias ? (
+                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{comida.nota_calorias}</p>
+                      ) : null}
                     </li>
                   ))}
                 </ul>

@@ -73,7 +73,9 @@ export function presentarPlan(plan: PlanSemanal, consulta: Consulta, fecha = new
         .map((comida) => ({
           momento: MOMENTOS[comida.momento],
           nombre: comida.receta.nombre,
+          categoria: comida.receta.categoria ?? "",
           kcal: entero.format(comida.calorias_estimadas),
+          nota: comida.nota_calorias,
         }));
       const total = dia.comidas.reduce((suma, comida) => suma + comida.calorias_estimadas, 0);
       return { id: dia.dia, etiqueta: etiquetaDia(dia.dia), total: entero.format(total), comidas };
